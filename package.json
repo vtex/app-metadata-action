@@ -1,0 +1,37 @@
+{
+  "name": "vtex-app-metadata-action",
+  "version": "1.0.0",
+  "description": "Reads metadata from a VTEX app",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "npm run lint && npm run prepare && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vtex/app-metadata-action.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "JavaScript",
+    "VTEX"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vtex/app-metadata-action/issues"
+  },
+  "homepage": "https://github.com/vtex/app-metadata-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^8.0.0",
+    "jest": "^27.2.5"
+  }
+}

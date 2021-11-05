@@ -1,0 +1,9 @@
+name: tested-vtex-manifest
+vendor: vtex
+version: 0.0.1
+
+services:
+- name: api
+  folder: ./
+  image-name: vtex-docker/service-image
+  public: true
