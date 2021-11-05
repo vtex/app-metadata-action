@@ -1,8 +1,22 @@
 name: 'VTEX App Metadata Action'
 description: 'Reads metadata from a VTEX app'
 outputs:
+  app-id:
+    description: "App id"
+  app-name:
+    description: "App name"
+  app-version:
+    description: "App version"
   app-specification:
-    description: 'App specification in JSON format'
+    description: "App specification in JSON format"
+  vendor-id:
+    description: "Vendor id"
+  service-name:
+    description: "Service name"
+  service-folder:
+    description: "Service folder"
+  service-image-name:
+    description: "Service image name"
 runs:
   using: 'node12'
   main: 'dist/index.js'
