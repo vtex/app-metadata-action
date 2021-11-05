@@ -5817,20 +5817,21 @@ module.exports = require("util");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(186);
-const metadataExtractor = __nccwpck_require__(395);
+const core = __nccwpck_require__(186)
+const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
-    const metadata = await metadataExtractor();
-    core.setOutput('app-name', metadata.appName);
-    core.setOutput('app-version', metadata.appVersion);
-    core.setOutput('app-id', metadata.appId);
-    core.setOutput('vendor-id', metadata.vendorId);
-    core.setOutput('app-specification', metadata.appSpecification);
-    core.setOutput('service-name', metadata.serviceName);
-    core.setOutput('service-folder', metadata.serviceFolder);
-    core.setOutput('service-image-name', metadata.serviceImageName);
+    const metadata = await metadataExtractor()
+    core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
+    core.setOutput('app-name', metadata.appName)
+    core.setOutput('app-version', metadata.appVersion)
+    core.setOutput('app-id', metadata.appId)
+    core.setOutput('vendor-id', metadata.vendorId)
+    core.setOutput('app-specification', metadata.appSpecification)
+    core.setOutput('service-name', metadata.serviceName)
+    core.setOutput('service-folder', metadata.serviceFolder)
+    core.setOutput('service-image-name', metadata.serviceImageName)
   } catch (error) {
     core.setFailed(error.message);
   }
