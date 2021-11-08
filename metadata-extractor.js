@@ -1,14 +1,17 @@
 const { promises: fs } = require('fs')
 const yaml = require("js-yaml")
+const makeNextVersionNumber = require('./app-version-factory')
 
 const vtexMetadataFilePath = './vtex.yml'
 
-const metadataExtractor = async function () {
+const metadataExtractor = async function (context) {
   const content = await fs.readFile(vtexMetadataFilePath, 'utf8')
   const appSpecification = yaml.load(content)
+  const nextVersionNumber = await makeNextVersionNumber(appSpecification.version, context)
   const metadata = {
     appName: appSpecification.name,
-    appVersion: appSpecification.version,
+    currentAppVersion: appSpecification.version,
+    nextAppVersion: nextVersionNumber,
     appId: `${appSpecification.vendor}.${appSpecification.name}`,
     vendorId: appSpecification.vendor,
     appSpecification: JSON.stringify(appSpecification),

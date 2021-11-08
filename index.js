@@ -1,12 +1,14 @@
 const core = require('@actions/core')
+const github = require('@actions/github')
 const metadataExtractor = require('./metadata-extractor')
 
 async function run() {
   try {
-    const metadata = await metadataExtractor()
+    const metadata = await metadataExtractor(github.context.payload)
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
-    core.setOutput('app-version', metadata.appVersion)
+    core.setOutput('current-app-version', metadata.currentAppVersion)
+    core.setOutput('next-app-version', metadata.nextAppVersion)
     core.setOutput('app-id', metadata.appId)
     core.setOutput('vendor-id', metadata.vendorId)
     core.setOutput('app-specification', metadata.appSpecification)

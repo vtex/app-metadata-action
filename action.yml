@@ -5,8 +5,10 @@ outputs:
     description: "App id"
   app-name:
     description: "App name"
-  app-version:
-    description: "App version"
+  current-app-version:
+    description: "Current app version, which is used to determine the next-app-version"
+  next-app-version:
+    description: "Next app version, which will be used in the built artifacts"
   app-specification:
     description: "App specification in JSON format"
   vendor-id:
