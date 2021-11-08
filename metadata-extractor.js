@@ -7,15 +7,21 @@ const vtexMetadataFilePath = './vtex.yml'
 const metadataExtractor = async function (context) {
   const content = await fs.readFile(vtexMetadataFilePath, 'utf8')
   const appSpecification = yaml.load(content)
+
   const nextVersionNumber = await makeNextVersionNumber(appSpecification.version, context)
+  const nextAppSpecification = Object.assign({}, appSpecification)
+  nextAppSpecification.version = nextVersionNumber
+
   const metadata = {
     appName: appSpecification.name,
     currentAppVersion: appSpecification.version,
     nextAppVersion: nextVersionNumber,
     appId: `${appSpecification.vendor}.${appSpecification.name}`,
     vendorId: appSpecification.vendor,
-    appSpecification: JSON.stringify(appSpecification),
+    currentAppSpecification: JSON.stringify(appSpecification),
+    nextAppSpecification: JSON.stringify(nextAppSpecification),
   }
+
   if (appSpecification.services && appSpecification.services.length > 0) {
     // TODO get all services, not only first
     const service = appSpecification.services[0]

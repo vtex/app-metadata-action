@@ -31,15 +31,21 @@ const vtexMetadataFilePath = './vtex.yml'
 const metadataExtractor = async function (context) {
   const content = await fs.readFile(vtexMetadataFilePath, 'utf8')
   const appSpecification = yaml.load(content)
+
   const nextVersionNumber = await makeNextVersionNumber(appSpecification.version, context)
+  const nextAppSpecification = Object.assign({}, appSpecification)
+  nextAppSpecification.version = nextVersionNumber
+
   const metadata = {
     appName: appSpecification.name,
     currentAppVersion: appSpecification.version,
     nextAppVersion: nextVersionNumber,
     appId: `${appSpecification.vendor}.${appSpecification.name}`,
     vendorId: appSpecification.vendor,
-    appSpecification: JSON.stringify(appSpecification),
+    currentAppSpecification: JSON.stringify(appSpecification),
+    nextAppSpecification: JSON.stringify(nextAppSpecification),
   }
+
   if (appSpecification.services && appSpecification.services.length > 0) {
     // TODO get all services, not only first
     const service = appSpecification.services[0]
@@ -15670,14 +15676,15 @@ const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
-    const metadata = await metadataExtractor(github.context.payload)
+    const metadata = await metadataExtractor(github.context ? github.context.payload : {})
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)
     core.setOutput('next-app-version', metadata.nextAppVersion)
     core.setOutput('app-id', metadata.appId)
     core.setOutput('vendor-id', metadata.vendorId)
-    core.setOutput('app-specification', metadata.appSpecification)
+    core.setOutput('current-app-specification', metadata.currentAppSpecification)
+    core.setOutput('next-app-specification', metadata.nextAppSpecification)
     core.setOutput('service-name', metadata.serviceName)
     core.setOutput('service-folder', metadata.serviceFolder)
     core.setOutput('service-image-name', metadata.serviceImageName)

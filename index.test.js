@@ -11,7 +11,7 @@ const appId = "vtex.tested-vtex-manifest"
 const vendorId = "vtex"
 const serviceName = "api"
 const serviceFolder = "./"
-const serviceImageName = "vtex-docker/service-image";
+const serviceImageName = "vtex-docker/service-image"
 
 const appSpecification = {
   name: appName,
@@ -31,15 +31,18 @@ test("read vtex.yml file", async () => {
   const metadata = await metadataExtractor({
     sha: commitSha,
   });
-  expect(metadata.appName).toBe(appName);
-  expect(metadata.currentAppVersion).toBe(appVersion);
-  expect(metadata.nextAppVersion).toBe(nextAppVersion);
-  expect(metadata.appId).toBe(appId);
-  expect(metadata.vendorId).toBe(vendorId);
-  expect(metadata.appSpecification).toBe(JSON.stringify(appSpecification));
-  expect(metadata.serviceName).toBe(serviceName);
-  expect(metadata.serviceFolder).toBe(serviceFolder);
-  expect(metadata.serviceImageName).toBe(serviceImageName);
+  expect(metadata.appName).toBe(appName)
+  expect(metadata.currentAppVersion).toBe(appVersion)
+  expect(metadata.nextAppVersion).toBe(nextAppVersion)
+  expect(metadata.appId).toBe(appId)
+  expect(metadata.vendorId).toBe(vendorId)
+  expect(metadata.serviceName).toBe(serviceName)
+  expect(metadata.serviceFolder).toBe(serviceFolder)
+  expect(metadata.serviceImageName).toBe(serviceImageName)
+
+  expect(metadata.currentAppSpecification).toBe(JSON.stringify(appSpecification))
+  appSpecification.version = nextAppVersion
+  expect(metadata.nextAppSpecification).toBe(JSON.stringify(appSpecification))
 });
 
 // shows how the runner will run a javascript action with env / stdout protocol
