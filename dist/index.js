@@ -11,7 +11,10 @@ const makeNextVersionNumber = async function (currentVersion, context) {
 };
 
 function getShortCommitHash(sha) {
-  return sha ? sha.substring(0, 7) : ''
+  if (!sha) {
+    throw new Error('contex.sha is required')
+  }
+  return sha.substring(0, 7)
 }
 
 module.exports = makeNextVersionNumber;
@@ -15676,8 +15679,7 @@ const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
-    core.info(JSON.stringify(github.context, undefined, 2));
-    const metadata = await metadataExtractor(github.context ? github.context : {});
+    const metadata = await metadataExtractor(github.context);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)

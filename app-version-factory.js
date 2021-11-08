@@ -5,7 +5,10 @@ const makeNextVersionNumber = async function (currentVersion, context) {
 };
 
 function getShortCommitHash(sha) {
-  return sha ? sha.substring(0, 7) : ''
+  if (!sha) {
+    throw new Error('contex.sha is required')
+  }
+  return sha.substring(0, 7)
 }
 
 module.exports = makeNextVersionNumber;
