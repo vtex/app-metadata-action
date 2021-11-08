@@ -15676,6 +15676,7 @@ const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
+    core.info(JSON.stringify(github.context.payload, undefined, 2));
     const metadata = await metadataExtractor(github.context ? github.context.payload : {})
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
