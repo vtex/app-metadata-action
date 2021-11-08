@@ -4,7 +4,6 @@ const metadataExtractor = require('./metadata-extractor')
 
 async function run() {
   try {
-    core.info(JSON.stringify(github.context, undefined, 2));
     const metadata = await metadataExtractor(github.context ? github.context : {});
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
