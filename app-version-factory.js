@@ -43,13 +43,15 @@ function validateArguments(
     throw new Error(
       `versionIncrementScope must be one of ${ACCEPTED_VERSION_INCREMENT_SCOPES.join(
         ", "
-      )}`
+      )} (provided value is ${versionIncrementScope})`
     );
   }
 
   if (!ACCEPTED_APP_RELEASE_TYPES.includes(appReleaseType)) {
     throw new Error(
-      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(", ")}`
+      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(
+        ", "
+      )} (provided value is ${appReleaseType})`
     );
   }
 }
