@@ -108,6 +108,7 @@ test("test runs", () => {
   process.env["GITHUB_SHA"] = commitSha
   process.env["INPUT_RELEASE-TYPE"] = 'development'
   process.env["INPUT_VERSION-INCREMENT-SCOPE"] = 'patch'
+  console.log(JSON.stringify(process.env))
   const ip = path.join(__dirname, "index.js");
   try {
     const result = cp.execSync(`node ${ip}`, { env: process.env }).toString();
