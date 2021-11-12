@@ -49,13 +49,15 @@ function validateArguments(
     throw new Error(
       `versionIncrementScope must be one of ${ACCEPTED_VERSION_INCREMENT_SCOPES.join(
         ", "
-      )}`
+      )} (provided value is ${versionIncrementScope})`
     );
   }
 
   if (!ACCEPTED_APP_RELEASE_TYPES.includes(appReleaseType)) {
     throw new Error(
-      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(", ")}`
+      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(
+        ", "
+      )} (provided value is ${appReleaseType})`
     );
   }
 }
@@ -15737,6 +15739,8 @@ async function run() {
   try {
     const appReleaseType = core.getInput("release-type");
     const versionIncrementScope = core.getInput("version-increment-scope");
+    core.log(`Release type: ${appReleaseType}`);
+    core.log(`Version increment scope: ${versionIncrementScope}`);
     const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
