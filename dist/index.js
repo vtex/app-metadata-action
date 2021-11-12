@@ -15739,8 +15739,9 @@ async function run() {
   try {
     const appReleaseType = core.getInput("release-type");
     const versionIncrementScope = core.getInput("version-increment-scope");
-    core.log(`Release type: ${appReleaseType}`);
-    core.log(`Version increment scope: ${versionIncrementScope}`);
+    core.info(JSON.stringify(process.env));
+    core.info(`Release type: ${appReleaseType}`);
+    core.info(`Version increment scope: ${versionIncrementScope}`);
     const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)

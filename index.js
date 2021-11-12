@@ -6,6 +6,7 @@ async function run() {
   try {
     const appReleaseType = core.getInput("release-type");
     const versionIncrementScope = core.getInput("version-increment-scope");
+    core.info(JSON.stringify(process.env));
     core.info(`Release type: ${appReleaseType}`);
     core.info(`Version increment scope: ${versionIncrementScope}`);
     const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
