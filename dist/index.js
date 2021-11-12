@@ -4,17 +4,64 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /***/ 2208:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const semver = __nccwpck_require__(1383)
+const semver = __nccwpck_require__(1383);
 
-const makeNextVersionNumber = async function (currentVersion, context) {
-  return semver.inc(currentVersion, 'prepatch', getShortCommitHash(context.sha))
+const ACCEPTED_VERSION_INCREMENT_SCOPES = ["major", "minor", "patch"];
+const ACCEPTED_APP_RELEASE_TYPES = ["development", "unpublished", "published"];
+
+const makeNextVersionNumber = async function (
+  currentVersion,
+  githubContext,
+  appReleaseType,
+  versionIncrementScope
+) {
+  validateArguments(
+    currentVersion,
+    githubContext,
+    appReleaseType,
+    versionIncrementScope
+  );
+
+  const versionPrefix = appReleaseType === "development" ? "pre" : "";
+
+  return semver.inc(
+    currentVersion,
+    `${versionPrefix}${versionIncrementScope}`,
+    getShortCommitHash(githubContext.sha)
+  );
 };
 
-function getShortCommitHash(sha) {
-  if (!sha) {
-    throw new Error('contex.sha is required')
+function validateArguments(
+  currentVersion,
+  githubContext,
+  appReleaseType,
+  versionIncrementScope
+) {
+  if (semver.valid(currentVersion) === null) {
+    throw new Error(`Invalid version number: ${currentVersion}`);
   }
-  return sha.substring(0, 7)
+
+  if (!githubContext || !githubContext.sha) {
+    throw new Error("contex.sha is required");
+  }
+
+  if (!ACCEPTED_VERSION_INCREMENT_SCOPES.includes(versionIncrementScope)) {
+    throw new Error(
+      `versionIncrementScope must be one of ${ACCEPTED_VERSION_INCREMENT_SCOPES.join(
+        ", "
+      )}`
+    );
+  }
+
+  if (!ACCEPTED_APP_RELEASE_TYPES.includes(appReleaseType)) {
+    throw new Error(
+      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(", ")}`
+    );
+  }
+}
+
+function getShortCommitHash(sha) {
+  return sha.substring(0, 7);
 }
 
 module.exports = makeNextVersionNumber;
@@ -25,19 +72,28 @@ module.exports = makeNextVersionNumber;
 /***/ 395:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const { promises: fs } = __nccwpck_require__(5747)
-const yaml = __nccwpck_require__(1917)
-const makeNextVersionNumber = __nccwpck_require__(2208)
+const { promises: fs } = __nccwpck_require__(5747);
+const yaml = __nccwpck_require__(1917);
+const makeNextVersionNumber = __nccwpck_require__(2208);
 
-const vtexMetadataFilePath = './vtex.yml'
+const vtexMetadataFilePath = "./vtex.yml";
 
-const metadataExtractor = async function (context) {
-  const content = await fs.readFile(vtexMetadataFilePath, 'utf8')
-  const appSpecification = yaml.load(content)
+const metadataExtractor = async function (
+  context,
+  appReleaseType,
+  versionIncrementScope
+) {
+  const content = await fs.readFile(vtexMetadataFilePath, "utf8");
+  const appSpecification = yaml.load(content);
 
-  const nextVersionNumber = await makeNextVersionNumber(appSpecification.version, context)
-  const nextAppSpecification = Object.assign({}, appSpecification)
-  nextAppSpecification.version = nextVersionNumber
+  const nextVersionNumber = await makeNextVersionNumber(
+    appSpecification.version,
+    context,
+    appReleaseType,
+    versionIncrementScope
+  );
+  const nextAppSpecification = Object.assign({}, appSpecification);
+  nextAppSpecification.version = nextVersionNumber;
 
   const metadata = {
     appName: appSpecification.name,
@@ -47,16 +103,16 @@ const metadataExtractor = async function (context) {
     vendorId: appSpecification.vendor,
     currentAppSpecification: JSON.stringify(appSpecification),
     nextAppSpecification: JSON.stringify(nextAppSpecification),
-  }
+  };
 
   if (appSpecification.services && appSpecification.services.length > 0) {
     // TODO get all services, not only first
-    const service = appSpecification.services[0]
-    metadata.serviceName = service.name
-    metadata.serviceFolder = service.folder
-    metadata.serviceImageName = service['image-name']
+    const service = appSpecification.services[0];
+    metadata.serviceName = service.name;
+    metadata.serviceFolder = service.folder;
+    metadata.serviceImageName = service["image-name"];
   }
-  return metadata
+  return metadata;
 };
 
 module.exports = metadataExtractor;
@@ -15679,7 +15735,9 @@ const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
-    const metadata = await metadataExtractor(github.context);
+    const appReleaseType = core.getInput("release-type");
+    const versionIncrementScope = core.getInput("version-increment-scope");
+    const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)

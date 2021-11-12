@@ -1,5 +1,14 @@
 name: 'VTEX App Metadata Action'
 description: 'Reads metadata from a VTEX app'
+inputs:
+  release-type:
+    description: 'Indicates the type of release that will be created: development, unpublished, or published'
+    required: false
+    default: 'development'
+  version-increment-scope:
+    description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
+    required: false
+    default: 'patch'
 outputs:
   app-id:
     description: "App id"

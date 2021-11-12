@@ -4,7 +4,9 @@ const metadataExtractor = require('./metadata-extractor')
 
 async function run() {
   try {
-    const metadata = await metadataExtractor(github.context);
+    const appReleaseType = core.getInput("release-type");
+    const versionIncrementScope = core.getInput("version-increment-scope");
+    const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)
