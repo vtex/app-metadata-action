@@ -1,26 +1,26 @@
 const semver = require("semver");
 
-const ACCEPTED_VERSION_INCREMENT_SCOPES = ["major", "minor", "patch"];
+const ACCEPTED_VERSION_INCREMENT_TYPES = ["major", "minor", "patch"];
 const ACCEPTED_APP_RELEASE_TYPES = ["development", "unpublished", "published"];
 
 const makeNextVersionNumber = async function (
   currentVersion,
   githubContext,
   appReleaseType,
-  versionIncrementScope
+  versionIncrementType
 ) {
   validateArguments(
     currentVersion,
     githubContext,
     appReleaseType,
-    versionIncrementScope
+    versionIncrementType
   );
 
   const versionPrefix = appReleaseType === "development" ? "pre" : "";
 
   return semver.inc(
     currentVersion,
-    `${versionPrefix}${versionIncrementScope}`,
+    `${versionPrefix}${versionIncrementType}`,
     getShortCommitHash(githubContext.sha)
   );
 };
@@ -29,7 +29,7 @@ function validateArguments(
   currentVersion,
   githubContext,
   appReleaseType,
-  versionIncrementScope
+  versionIncrementType
 ) {
   if (semver.valid(currentVersion) === null) {
     throw new Error(`Invalid version number: ${currentVersion}`);
@@ -39,11 +39,11 @@ function validateArguments(
     throw new Error("contex.sha is required");
   }
 
-  if (!ACCEPTED_VERSION_INCREMENT_SCOPES.includes(versionIncrementScope)) {
+  if (!ACCEPTED_VERSION_INCREMENT_TYPES.includes(versionIncrementType)) {
     throw new Error(
-      `versionIncrementScope must be one of ${ACCEPTED_VERSION_INCREMENT_SCOPES.join(
+      `versionIncrementType must be one of ${ACCEPTED_VERSION_INCREMENT_TYPES.join(
         ", "
-      )} (provided value is ${versionIncrementScope})`
+      )} (provided value is ${versionIncrementType})`
     );
   }
 

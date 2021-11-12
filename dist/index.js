@@ -6,27 +6,27 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 const semver = __nccwpck_require__(1383);
 
-const ACCEPTED_VERSION_INCREMENT_SCOPES = ["major", "minor", "patch"];
+const ACCEPTED_VERSION_INCREMENT_TYPES = ["major", "minor", "patch"];
 const ACCEPTED_APP_RELEASE_TYPES = ["development", "unpublished", "published"];
 
 const makeNextVersionNumber = async function (
   currentVersion,
   githubContext,
   appReleaseType,
-  versionIncrementScope
+  versionIncrementType
 ) {
   validateArguments(
     currentVersion,
     githubContext,
     appReleaseType,
-    versionIncrementScope
+    versionIncrementType
   );
 
   const versionPrefix = appReleaseType === "development" ? "pre" : "";
 
   return semver.inc(
     currentVersion,
-    `${versionPrefix}${versionIncrementScope}`,
+    `${versionPrefix}${versionIncrementType}`,
     getShortCommitHash(githubContext.sha)
   );
 };
@@ -35,7 +35,7 @@ function validateArguments(
   currentVersion,
   githubContext,
   appReleaseType,
-  versionIncrementScope
+  versionIncrementType
 ) {
   if (semver.valid(currentVersion) === null) {
     throw new Error(`Invalid version number: ${currentVersion}`);
@@ -45,11 +45,11 @@ function validateArguments(
     throw new Error("contex.sha is required");
   }
 
-  if (!ACCEPTED_VERSION_INCREMENT_SCOPES.includes(versionIncrementScope)) {
+  if (!ACCEPTED_VERSION_INCREMENT_TYPES.includes(versionIncrementType)) {
     throw new Error(
-      `versionIncrementScope must be one of ${ACCEPTED_VERSION_INCREMENT_SCOPES.join(
+      `versionIncrementType must be one of ${ACCEPTED_VERSION_INCREMENT_TYPES.join(
         ", "
-      )} (provided value is ${versionIncrementScope})`
+      )} (provided value is ${versionIncrementType})`
     );
   }
 
@@ -83,7 +83,7 @@ const vtexMetadataFilePath = "./vtex.yml";
 const metadataExtractor = async function (
   context,
   appReleaseType,
-  versionIncrementScope
+  versionIncrementType
 ) {
   const content = await fs.readFile(vtexMetadataFilePath, "utf8");
   const appSpecification = yaml.load(content);
@@ -92,7 +92,7 @@ const metadataExtractor = async function (
     appSpecification.version,
     context,
     appReleaseType,
-    versionIncrementScope
+    versionIncrementType
   );
   const nextAppSpecification = Object.assign({}, appSpecification);
   nextAppSpecification.version = nextVersionNumber;
@@ -15738,10 +15738,10 @@ const metadataExtractor = __nccwpck_require__(395)
 async function run() {
   try {
     const appReleaseType = core.getInput("release-type");
-    const versionIncrementScope = core.getInput("version-increment-scope");
+    const versionIncrementType = core.getInput("version-increment-type");
     core.info(`Release type: ${appReleaseType}`);
-    core.info(`Version increment scope: ${versionIncrementScope}`);
-    const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementScope);
+    core.info(`Version increment scope: ${versionIncrementType}`);
+    const metadata = await metadataExtractor(github.context, appReleaseType, versionIncrementType);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)

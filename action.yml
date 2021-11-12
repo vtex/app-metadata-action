@@ -5,7 +5,7 @@ inputs:
     description: 'Indicates the type of release that will be created: development, unpublished, or published'
     required: false
     default: 'development'
-  version-increment-scope:
+  version-increment-type:
     description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
     required: false
     default: 'patch'
