@@ -6,7 +6,7 @@ const vtexMetadataFilePath = "./vtex.yml";
 
 const metadataExtractor = async function (
   context,
-  appReleaseType,
+  appVersionType,
   versionIncrementType
 ) {
   const content = await fs.readFile(vtexMetadataFilePath, "utf8");
@@ -15,7 +15,7 @@ const metadataExtractor = async function (
   const nextVersionNumber = await makeNextVersionNumber(
     appSpecification.version,
     context,
-    appReleaseType,
+    appVersionType,
     versionIncrementType
   );
   const nextAppSpecification = Object.assign({}, appSpecification);

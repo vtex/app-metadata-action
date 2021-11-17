@@ -1,22 +1,22 @@
 const semver = require("semver");
 
 const ACCEPTED_VERSION_INCREMENT_TYPES = ["major", "minor", "patch"];
-const ACCEPTED_APP_RELEASE_TYPES = ["development", "unpublished", "published"];
+const ACCEPTED_APP_VERSION_TYPES = ["development", "unpublished", "published"];
 
 const makeNextVersionNumber = async function (
   currentVersion,
   githubContext,
-  appReleaseType,
+  appVersionType,
   versionIncrementType
 ) {
   validateArguments(
     currentVersion,
     githubContext,
-    appReleaseType,
+    appVersionType,
     versionIncrementType
   );
 
-  const versionPrefix = appReleaseType === "development" ? "pre" : "";
+  const versionPrefix = appVersionType === "development" ? "pre" : ""
 
   return semver.inc(
     currentVersion,
@@ -28,7 +28,7 @@ const makeNextVersionNumber = async function (
 function validateArguments(
   currentVersion,
   githubContext,
-  appReleaseType,
+  appVersionType,
   versionIncrementType
 ) {
   if (semver.valid(currentVersion) === null) {
@@ -47,11 +47,11 @@ function validateArguments(
     );
   }
 
-  if (!ACCEPTED_APP_RELEASE_TYPES.includes(appReleaseType)) {
+  if (!ACCEPTED_APP_VERSION_TYPES.includes(appVersionType)) {
     throw new Error(
-      `appReleaseType must be one of ${ACCEPTED_APP_RELEASE_TYPES.join(
+      `appVersionType must be one of ${ACCEPTED_APP_VERSION_TYPES.join(
         ", "
-      )} (provided value is ${appReleaseType})`
+      )} (provided value is ${appVersionType})`
     );
   }
 }
