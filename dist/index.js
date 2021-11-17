@@ -7,22 +7,22 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 const semver = __nccwpck_require__(1383);
 
 const ACCEPTED_VERSION_INCREMENT_TYPES = ["major", "minor", "patch"];
-const ACCEPTED_APP_VERSION_TYPES = ["development", "unpublished", "published"];
+const ACCEPTED_APP_VERSION_VISIBILITIES = ["development", "unpublished", "published"];
 
 const makeNextVersionNumber = async function (
   currentVersion,
   githubContext,
-  appVersionType,
+  appVersionVisibility,
   versionIncrementType
 ) {
   validateArguments(
     currentVersion,
     githubContext,
-    appVersionType,
+    appVersionVisibility,
     versionIncrementType
   );
 
-  const versionPrefix = appVersionType === "development" ? "pre" : ""
+  const versionPrefix = appVersionVisibility === "development" ? "pre" : ""
 
   return semver.inc(
     currentVersion,
@@ -34,7 +34,7 @@ const makeNextVersionNumber = async function (
 function validateArguments(
   currentVersion,
   githubContext,
-  appVersionType,
+  appVersionVisibility,
   versionIncrementType
 ) {
   if (semver.valid(currentVersion) === null) {
@@ -53,11 +53,11 @@ function validateArguments(
     );
   }
 
-  if (!ACCEPTED_APP_VERSION_TYPES.includes(appVersionType)) {
+  if (!ACCEPTED_APP_VERSION_VISIBILITIES.includes(appVersionVisibility)) {
     throw new Error(
-      `appVersionType must be one of ${ACCEPTED_APP_VERSION_TYPES.join(
+      `appVersionVisibility must be one of ${ACCEPTED_APP_VERSION_VISIBILITIES.join(
         ", "
-      )} (provided value is ${appVersionType})`
+      )} (provided value is ${appVersionVisibility})`
     );
   }
 }
@@ -82,7 +82,7 @@ const vtexMetadataFilePath = "./vtex.yml";
 
 const metadataExtractor = async function (
   context,
-  appVersionType,
+  appVersionVisibility,
   versionIncrementType
 ) {
   const content = await fs.readFile(vtexMetadataFilePath, "utf8");
@@ -91,7 +91,7 @@ const metadataExtractor = async function (
   const nextVersionNumber = await makeNextVersionNumber(
     appSpecification.version,
     context,
-    appVersionType,
+    appVersionVisibility,
     versionIncrementType
   );
   const nextAppSpecification = Object.assign({}, appSpecification);
@@ -15737,11 +15737,11 @@ const metadataExtractor = __nccwpck_require__(395)
 
 async function run() {
   try {
-    const appVersionType = core.getInput("version-type");
+    const appVersionVisibility = core.getInput("version-visibility");
     const versionIncrementType = core.getInput("version-increment-type");
-    core.info(`Version type: ${appVersionType}`);
+    core.info(`Version visibility: ${appVersionVisibility}`);
     core.info(`Version increment type: ${versionIncrementType}`);
-    const metadata = await metadataExtractor(github.context, appVersionType, versionIncrementType);
+    const metadata = await metadataExtractor(github.context, appVersionVisibility, versionIncrementType);
     core.info(`Exported metadata: ${JSON.stringify(metadata, null, 2)}`)
     core.setOutput('app-name', metadata.appName)
     core.setOutput('current-app-version', metadata.currentAppVersion)
