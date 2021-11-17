@@ -1,12 +1,12 @@
 name: 'VTEX App Metadata Action'
 description: 'Reads metadata from a VTEX app'
 inputs:
-  version-type:
-    description: 'Indicates the type of version that will be created: development, unpublished, or published'
+  version-visibility:
+    description: 'Indicates the visibility of version that will be created: development, unpublished, or published'
     required: false
     default: 'development'
   version-increment-type:
-    description: 'Indicates the type of change that of change that is being done, accepting: major, minor, patch'
+    description: 'Indicates the type of change that is being done, accepting: major, minor, patch'
     required: false
     default: 'patch'
 outputs:
