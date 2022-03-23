@@ -25,6 +25,7 @@ beforeEach(() => {
     name: appName,
     vendor: vendorId,
     version: appVersion,
+    'ui-components': [ { name: 'app-ui-components', folder: 'store-ui-components' } ],
     services: [
       {
         name: serviceName,

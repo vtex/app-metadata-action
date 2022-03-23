@@ -39,9 +39,9 @@ const metadataExtractor = async function (
     metadata.serviceImageName = service["image-name"];
   }
 
-  if (appSpecification.ui-components && appSpecification.ui-components.length > 0) {
+  if (appSpecification['ui-components'] && appSpecification['ui-components'].length > 0) {
     // TODO get all fronts, not only first
-    const component = appSpecification.ui-components[0];
+    const component = appSpecification['ui-components'][0];
     metadata.frontendName = component.name;
     metadata.frontendFolder = component.folder;
   }
