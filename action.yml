@@ -30,6 +30,10 @@ outputs:
     description: "Service folder"
   service-image-name:
     description: "Service image name"
+  frontend-name:
+    description: "Frontend name"
+  frontend-folder:
+    description: "Frontend folder"
 runs:
   using: 'node12'
   main: 'dist/index.js'
