@@ -20,6 +20,8 @@ async function run() {
     core.setOutput('service-name', metadata.serviceName)
     core.setOutput('service-folder', metadata.serviceFolder)
     core.setOutput('service-image-name', metadata.serviceImageName)
+    core.setOutput('frontend-name', metadata.frontendName)
+    core.setOutput('frontend-folder', metadata.frontendFolder)
   } catch (error) {
     core.setFailed(error.message);
   }

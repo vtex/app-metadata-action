@@ -16,6 +16,8 @@ const appId = "vtex.tested-vtex-manifest";
 const vendorId = "vtex";
 const serviceName = "api";
 const serviceFolder = "./";
+const frontendName = "app-ui-components";
+const frontendFolder = "store-ui-components";
 const serviceImageName = "vtex-docker/service-image";
 
 let appSpecification;
@@ -25,6 +27,7 @@ beforeEach(() => {
     name: appName,
     vendor: vendorId,
     version: appVersion,
+    'ui-components': [ { name: 'app-ui-components', folder: 'store-ui-components' } ],
     services: [
       {
         name: serviceName,
@@ -36,110 +39,114 @@ beforeEach(() => {
   };
 });
 
-test("read vtex.yml file and generate a prepatch version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "development",
-    "patch"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionPrepatch);
-});
+describe('Metadata action', () => {
+  it("read vtex.yml file and generate a pre-patch version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "development",
+        "patch"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionPrepatch);
+  });
 
-test("read vtex.yml file and generate a patch version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "unpublished",
-    "patch"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionPatch);
-});
+  it("read vtex.yml file and generate a patch version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "unpublished",
+        "patch"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionPatch);
+  });
 
-test("read vtex.yml file and generate a preminor version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "development",
-    "minor"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionPreminor);
-});
+  it("read vtex.yml file and generate a pre-minor version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "development",
+        "minor"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionPreminor);
+  });
 
-test("read vtex.yml file and generate a minor version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "published",
-    "minor"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionMinor);
-});
+  it("read vtex.yml file and generate a minor version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "published",
+        "minor"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionMinor);
+  });
 
-test("read vtex.yml file and generate a premajor version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "development",
-    "major"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionPremajor);
-});
+  it("read vtex.yml file and generate a pre-major version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "development",
+        "major"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionPremajor);
+  });
 
-test("read vtex.yml file and generate a major version", async () => {
-  const metadata = await metadataExtractor(
-    {
-      sha: commitSha,
-    },
-    "published",
-    "major"
-  );
-  validateCommonFields(metadata);
-  validateNextVersion(metadata, nextAppVersionMajor);
-});
+  it("read vtex.yml file and generate a major version", async () => {
+    const metadata = await metadataExtractor(
+        {
+          sha: commitSha,
+        },
+        "published",
+        "major"
+    );
+    validateCommonFields(metadata);
+    validateNextVersion(metadata, nextAppVersionMajor);
+  });
 
-function validateCommonFields(metadata) {
-  expect(metadata.appName).toBe(appName);
-  expect(metadata.currentAppVersion).toBe(appVersion);
-  expect(metadata.appId).toBe(appId);
-  expect(metadata.vendorId).toBe(vendorId);
-  expect(metadata.serviceName).toBe(serviceName);
-  expect(metadata.serviceFolder).toBe(serviceFolder);
-  expect(metadata.serviceImageName).toBe(serviceImageName);
+  // shows how the runner will run a javascript action with env / stdout protocol
+  it.skip("test runs - Disabled because env variables are not passed when running in the Github Actions server", () => {
+    process.env["GITHUB_SHA"] = commitSha;
+    process.env["INPUT_VERSION-VISIBILITY"] = "development";
+    process.env["INPUT_VERSION-INCREMENT-TYPE"] = "patch";
+    const ip = path.join(__dirname, "index.js");
+    try {
+      const result = cp.execSync(`node ${ip}`, { env: process.env }).toString();
+      console.log(result);
+    } catch (err) {
+      console.error(err.stdout.toString());
+      throw err;
+    }
+  });
 
-  expect(metadata.currentAppSpecification).toBe(
-    JSON.stringify(appSpecification)
-  );
-}
+  function validateCommonFields(metadata) {
+    expect(metadata.appName).toBe(appName);
+    expect(metadata.currentAppVersion).toBe(appVersion);
+    expect(metadata.appId).toBe(appId);
+    expect(metadata.vendorId).toBe(vendorId);
+    expect(metadata.serviceName).toBe(serviceName);
+    expect(metadata.serviceFolder).toBe(serviceFolder);
+    expect(metadata.serviceImageName).toBe(serviceImageName);
+    expect(metadata.frontendName).toBe(frontendName);
+    expect(metadata.frontendFolder).toBe(frontendFolder);
 
-function validateNextVersion(metadata, expectedNextVersion) {
-  expect(metadata.nextAppVersion).toBe(expectedNextVersion);
-
-  appSpecification.version = expectedNextVersion;
-  expect(metadata.nextAppSpecification).toBe(JSON.stringify(appSpecification));
-}
-
-// shows how the runner will run a javascript action with env / stdout protocol
-test.skip("test runs - Disabled because env variables are not passed when running in the Github Actions server", () => {
-  process.env["GITHUB_SHA"] = commitSha;
-  process.env["INPUT_VERSION-VISIBILITY"] = "development";
-  process.env["INPUT_VERSION-INCREMENT-TYPE"] = "patch";
-  const ip = path.join(__dirname, "index.js");
-  try {
-    const result = cp.execSync(`node ${ip}`, { env: process.env }).toString();
-    console.log(result);
-  } catch (err) {
-    console.error(err.stdout.toString());
-    throw err;
+    expect(metadata.currentAppSpecification).toBe(
+        JSON.stringify(appSpecification)
+    );
   }
-});
+
+  function validateNextVersion(metadata, expectedNextVersion) {
+    expect(metadata.nextAppVersion).toBe(expectedNextVersion);
+
+    appSpecification.version = expectedNextVersion;
+    expect(metadata.nextAppSpecification).toBe(JSON.stringify(appSpecification));
+  }
+})

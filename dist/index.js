@@ -114,6 +114,13 @@ const metadataExtractor = async function (
     metadata.serviceFolder = service.folder;
     metadata.serviceImageName = service["image-name"];
   }
+
+  if (appSpecification['ui-components'] && appSpecification['ui-components'].length > 0) {
+    // TODO get all fronts, not only first
+    const component = appSpecification['ui-components'][0];
+    metadata.frontendName = component.name;
+    metadata.frontendFolder = component.folder;
+  }
   return metadata;
 };
 
@@ -15753,6 +15760,8 @@ async function run() {
     core.setOutput('service-name', metadata.serviceName)
     core.setOutput('service-folder', metadata.serviceFolder)
     core.setOutput('service-image-name', metadata.serviceImageName)
+    core.setOutput('frontend-name', metadata.frontendName)
+    core.setOutput('frontend-folder', metadata.frontendFolder)
   } catch (error) {
     core.setFailed(error.message);
   }

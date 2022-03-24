@@ -2,8 +2,11 @@ name: tested-vtex-manifest
 vendor: vtex
 version: 0.0.1
 
+ui-components:
+  - name: app-ui-components
+    folder: store-ui-components
 services:
-- name: api
-  folder: ./
-  image-name: vtex-docker/service-image
-  public: true
+  - name: api
+    folder: ./
+    image-name: vtex-docker/service-image
+    public: true
