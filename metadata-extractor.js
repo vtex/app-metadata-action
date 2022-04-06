@@ -2,6 +2,9 @@ const { promises: fs } = require("fs");
 const yaml = require("js-yaml");
 const makeNextVersionNumber = require("./app-version-factory");
 
+const SERVICE_MODULE_KEY = 'services'
+const STOREFRONT_COMPONENTS_MODULE_KEY = 'storefront-components'
+
 const vtexMetadataFilePath = "./vtex.yml";
 
 const metadataExtractor = async function (
@@ -31,17 +34,17 @@ const metadataExtractor = async function (
     nextAppSpecification: JSON.stringify(nextAppSpecification),
   };
 
-  if (appSpecification.services && appSpecification.services.length > 0) {
+  if (appSpecification[SERVICE_MODULE_KEY] && appSpecification[SERVICE_MODULE_KEY].length > 0) {
     // TODO get all services, not only first
-    const service = appSpecification.services[0];
+    const service = appSpecification[SERVICE_MODULE_KEY][0];
     metadata.serviceName = service.name;
     metadata.serviceFolder = service.folder;
     metadata.serviceImageName = service["image-name"];
   }
 
-  if (appSpecification['ui-components'] && appSpecification['ui-components'].length > 0) {
+  if (appSpecification[STOREFRONT_COMPONENTS_MODULE_KEY] && appSpecification[STOREFRONT_COMPONENTS_MODULE_KEY].length > 0) {
     // TODO get all fronts, not only first
-    const component = appSpecification['ui-components'][0];
+    const component = appSpecification[STOREFRONT_COMPONENTS_MODULE_KEY][0];
     metadata.frontendName = component.name;
     metadata.frontendFolder = component.folder;
   }

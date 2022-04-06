@@ -1,8 +1,8 @@
 name: tested-vtex-manifest
 vendor: vtex
-version: 1.0.0
+version: 0.0.1
 
-ui-components:
+storefront-components:
   - name: app-ui-components
     folder: store-ui-components
 services:

@@ -22,13 +22,16 @@ const serviceImageName = "vtex-docker/service-image";
 
 let appSpecification;
 
+const SERVICE_MODULE_KEY = 'services'
+const STOREFRONT_COMPONENTS_MODULE_KEY = 'storefront-components'
+
 beforeEach(() => {
   appSpecification = {
     name: appName,
     vendor: vendorId,
     version: appVersion,
-    'ui-components': [ { name: 'app-ui-components', folder: 'store-ui-components' } ],
-    services: [
+    [STOREFRONT_COMPONENTS_MODULE_KEY]: [ { name: 'app-ui-components', folder: 'store-ui-components' } ],
+    [SERVICE_MODULE_KEY]: [
       {
         name: serviceName,
         folder: serviceFolder,
